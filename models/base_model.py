@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 """This modul contains tha Base model class"""
-import models
 import uuid
-import datetime
+from datetime import datetime
+import json
+import models
 
 class BaseModel():
     """Base Model class"""
@@ -15,16 +16,18 @@ class BaseModel():
             for key, val in kwargs.items():
                 if key != "__class__":
                     if key == "created_at" or key == "updated_at":
-                        val = datetime.datetime.strptime(val, time_format)
+                        val = datetime.strptime(val, time_format)
                     setattr(self, key, val)
         else:
             self.id = str(uuid.uuid4())
-            self.created_at = datetime.datetime.now()
-            self.updated_at = datetime.datetime.now()
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
+            x = models.storage.new(self)
 
     def save(self):
         """saving public instance attribute"""
-        self.update_at = datetime.datetime.now()
+        self.updated_at = datetime.now()
+        models.storage.save()
 
     def __str__(self):
         """Ptinting class name, id and dict"""
